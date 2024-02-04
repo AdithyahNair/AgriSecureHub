@@ -9,7 +9,7 @@ export default () => {
         <a>
           <Header
             as="h1"
-            image="./logo.png"
+            image="/logo.png"
             content="AgriSecureHub"
             subheader={
               <HeaderSubheader>

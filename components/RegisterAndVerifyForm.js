@@ -1,9 +1,8 @@
 import React, { Component, useState } from "react";
 import web3 from "../ethereum/web3";
 import factory from "../ethereum/factory";
-import "semantic-ui-css/semantic.min.css";
 import { FormField, Button, Form, Dropdown, Message } from "semantic-ui-react";
-
+import { Router } from "../routes";
 class RegisterAndVerifyForm extends Component {
   state = {
     type: 0,
@@ -20,13 +19,14 @@ class RegisterAndVerifyForm extends Component {
 
   onCreate = async (event) => {
     event.preventDefault();
-    console.log(this.state.address, this.state.type);
     this.setState({ create: true, errorMessage: "" });
     const accounts = await web3.eth.getAccounts();
     try {
       await factory.methods
         .enterEntityStatus(this.state.address, this.state.type)
         .send({ from: accounts[0] });
+      const isCompany = await factory.methods.getIsCompany().call();
+      Router.pushRoute(`/contractlist/${isCompany}`);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
@@ -34,13 +34,15 @@ class RegisterAndVerifyForm extends Component {
   };
 
   onVerify = async (event) => {
-    console.log(this.state.address, this.state.type);
     event.preventDefault();
     this.setState({ verify: true, errorMessage: "" });
+    const accounts = await web3.eth.getAccounts();
     try {
       await factory.methods
         .confirmStatus(this.state.address, this.state.type)
-        .call();
+        .send({ from: accounts[0] });
+      const isCompany = await factory.methods.getIsCompany().call();
+      Router.pushRoute(`/contractlist/${isCompany}`);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }

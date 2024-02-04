@@ -1,14 +1,21 @@
 import React, { Component } from "react";
 import Layout from "../../components/Layout";
-import { Card } from "semantic-ui-react";
+import { Card, Button } from "semantic-ui-react";
 import factory from "../../ethereum/factory";
-import web3 from "../../ethereum/web3";
+import { Router } from "../../routes";
 
 class ContractList extends Component {
-  static async getInitialProps() {
+  static async getInitialProps(props) {
     const contracts = await factory.methods.getDeployedContracts().call();
-    return { contracts };
+    const isCompany = props.query.isCompany;
+    console.log(typeof isCompany == "string");
+    return { contracts, isCompany };
   }
+
+  onSubmit = async (event) => {
+    event.preventDefault();
+    Router.replace("/contractlist/new");
+  };
 
   renderCardGroup() {
     const items = this.props.contracts.map((address) => {
@@ -23,12 +30,19 @@ class ContractList extends Component {
   }
   render() {
     return (
-      <div>
-        <Layout>
-          <h3>Contract List</h3>
-          {this.renderCardGroup()}
-        </Layout>
-      </div>
+      <Layout>
+        {this.props.isCompany === "true" ? (
+          <Button
+            onClick={this.onSubmit}
+            content="Create Contract"
+            primary
+            icon="plus"
+            floated="right"
+          />
+        ) : null}
+        <h3>Contract List</h3>
+        {this.renderCardGroup()}
+      </Layout>
     );
   }
 }
