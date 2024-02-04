@@ -8,7 +8,6 @@ class ContractList extends Component {
   static async getInitialProps(props) {
     const contracts = await factory.methods.getDeployedContracts().call();
     const isCompany = props.query.isCompany;
-    console.log(typeof isCompany == "string");
     return { contracts, isCompany };
   }
 
