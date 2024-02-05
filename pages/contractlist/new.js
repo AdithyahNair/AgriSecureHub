@@ -5,16 +5,26 @@ import { Link } from "../../routes";
 import { Button, Icon } from "semantic-ui-react";
 
 class CreateContract extends Component {
+  static async getInitialProps(props) {
+    const entity = props.query.entity;
+    const isCompany = props.query.isCompany;
+    return { entity, isCompany };
+  }
   render() {
     return (
       <Layout>
-        <Link route="/contractlist/true">
+        <Link
+          route={`/contractlist/${this.props.entity}/${this.props.isCompany}`}
+        >
           <Button icon basic>
             <Icon name="angle left" />
           </Button>
         </Link>
-        <h3 style={{ marginBottom: "30px" }}>Create Contract</h3>
-        <CreateContractForm />
+        <h2 style={{ marginBottom: "30px" }}>Create Contract</h2>
+        <CreateContractForm
+          entity={this.props.entity}
+          isCompany={this.props.isCompany}
+        />
       </Layout>
     );
   }

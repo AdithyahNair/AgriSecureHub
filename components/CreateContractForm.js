@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { FormField, Form, Button, Input, Message } from "semantic-ui-react";
 import web3 from "../ethereum/web3";
 import factory from "../ethereum/factory";
-import Router from "../routes";
+import { Router } from "../routes";
 
 class CreateContractForm extends Component {
   state = {
@@ -27,7 +27,9 @@ class CreateContractForm extends Component {
         .send({
           from: accounts[0],
         });
-      Router.replaceRoute("/contractlist");
+      Router.pushRoute(
+        `/contractlist/${this.props.entity}/${this.props.isCompany}`
+      );
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }

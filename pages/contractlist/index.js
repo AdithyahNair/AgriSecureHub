@@ -2,27 +2,35 @@ import React, { Component } from "react";
 import Layout from "../../components/Layout";
 import { Card, Button } from "semantic-ui-react";
 import factory from "../../ethereum/factory";
-import { Router } from "../../routes";
+import { Router, Link } from "../../routes";
 
 class ContractList extends Component {
   static async getInitialProps(props) {
     const contracts = await factory.methods.getDeployedContracts().call();
     const isCompany = props.query.isCompany;
-    return { contracts, isCompany };
+    const entity = props.query.entity;
+    return { contracts, isCompany, entity };
   }
 
   onSubmit = async (event) => {
     event.preventDefault();
-    Router.replace("/contractlist/new");
+    Router.pushRoute(
+      `/contractlist/${this.props.entity}/${this.props.isCompany}/new`
+    );
   };
 
   renderCardGroup() {
     const items = this.props.contracts.map((address) => {
       return {
         header: address,
-        description: <a>View Contract</a>,
+        description: (
+          <Link
+            route={`/contractlist/${this.props.entity}/${this.props.isCompany}/${address}`}
+          >
+            <a>View Contract</a>
+          </Link>
+        ),
         fluid: true,
-        link: true,
       };
     });
     return <Card.Group items={items} />;
@@ -39,7 +47,7 @@ class ContractList extends Component {
             floated="right"
           />
         ) : null}
-        <h3>Contract List</h3>
+        <h2>Contract List</h2>
         {this.renderCardGroup()}
       </Layout>
     );

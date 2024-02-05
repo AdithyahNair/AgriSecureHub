@@ -25,8 +25,12 @@ class RegisterAndVerifyForm extends Component {
       await factory.methods
         .enterEntityStatus(this.state.address, this.state.type)
         .send({ from: accounts[0] });
-      const isCompany = await factory.methods.getIsCompany().call();
-      Router.pushRoute(`/contractlist/${isCompany}`);
+      const results = await factory.methods
+        .getManagerAndEntityType(this.state.address, this.state.type)
+        .call();
+      const entity = results[0];
+      const isCompany = results[1];
+      Router.pushRoute(`/contractlist/${entity}/${isCompany}`);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
@@ -35,14 +39,19 @@ class RegisterAndVerifyForm extends Component {
 
   onVerify = async (event) => {
     event.preventDefault();
-    this.setState({ verify: true, errorMessage: "" });
     const accounts = await web3.eth.getAccounts();
+    this.setState({ verify: true, errorMessage: "" });
     try {
       await factory.methods
         .confirmStatus(this.state.address, this.state.type)
         .send({ from: accounts[0] });
-      const isCompany = await factory.methods.getIsCompany().call();
-      Router.pushRoute(`/contractlist/${isCompany}`);
+      const results = await factory.methods
+        .getManagerAndEntityType(this.state.address, this.state.type)
+        .call();
+      const entity = results[0];
+      const isCompany = results[1];
+      console.log(results);
+      Router.pushRoute(`/contractlist/${entity}/${isCompany}`);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }

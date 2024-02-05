@@ -4,26 +4,17 @@ contract ContractFactory {
     enum EntityType { NOSTATUS, COMPANY, FARMER, PROCESSER, DISTRIBUTOR, RETAILER, CONSUMER }
     mapping(address => EntityType) public allEntities;
     address[] public deployedContracts;
-    bool public isCompany ;
     
-    function enterEntityStatus(address manager, EntityType entity) public {
+    function enterEntityStatus(address manager, EntityType entity) public  {
+        require(manager==msg.sender);
         require(allEntities[manager] == EntityType(0));
         allEntities[manager] = entity;
-        if(allEntities[manager] == EntityType(1)) {
-            isCompany = true;
-        } else {
-            isCompany = false;
-        }
     }
 
-    function confirmStatus(address manager, EntityType entity) public  {
+    function confirmStatus(address manager, EntityType entity) public view  {
+        require(manager == msg.sender);
         require(allEntities[manager] != EntityType(0));
         require(allEntities[manager] == entity);
-        if(allEntities[manager] == EntityType(1)) {
-            isCompany = true;
-        } else {
-            isCompany = false;
-        }
     }
 
     function createContract(address farmerAddress, string name, string quantity) public  {
@@ -36,8 +27,9 @@ contract ContractFactory {
         return deployedContracts;
     }
 
-    function getIsCompany() public view returns (bool) {
-        return isCompany;
+    function getManagerAndEntityType(address manager, EntityType entity) public pure returns (address, bool) {
+        bool isCompany = (entity == EntityType(1));
+        return (manager, isCompany);
     }
 }
 
@@ -50,11 +42,14 @@ contract Contract {
     address public consumer;
     string public productName;
     string public productQuantity;
+    address[] public entityList;
     
     function Contract(address agriculturist, address creator, string name, string quantity) public  {
         farmer = agriculturist;
         manager = creator;
         productName = name;
         productQuantity = quantity;
+        entityList.push(manager);
+        entityList.push(farmer);
     }
 }
