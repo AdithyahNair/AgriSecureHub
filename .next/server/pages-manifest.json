@@ -2,7 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/contractlist": "pages/contractlist.js",
-  "/": "pages/index.js",
-  "/contractlist/new": "pages/contractlist/new.js"
+  "/contractlist/new": "pages/contractlist/new.js",
+  "/contractlist": "pages/contractlist.js"
 }
