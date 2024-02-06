@@ -23,13 +23,13 @@ contract ContractFactory {
         deployedContracts.push(newContract);
     }
 
-    function getDeployedContracts() public view returns (address []) {
-        return deployedContracts;
-    }
-
     function getManagerAndEntityType(address manager, EntityType entity) public pure returns (address, bool) {
         bool isCompany = (entity == EntityType(1));
         return (manager, isCompany);
+    }
+
+    function getDeployedContracts() public view returns (address []) {
+        return deployedContracts;
     }
 }
 
@@ -51,5 +51,17 @@ contract Contract {
         productQuantity = quantity;
         entityList.push(manager);
         entityList.push(farmer);
+    }
+
+
+    function getSummary() public view returns(address, address, address, address, address, address) {
+        return (
+            manager,
+            farmer,
+            processor,
+            distributor,
+            retailer,
+            consumer
+        );
     }
 }

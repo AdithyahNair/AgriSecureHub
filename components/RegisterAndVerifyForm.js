@@ -50,7 +50,6 @@ class RegisterAndVerifyForm extends Component {
         .call();
       const entity = results[0];
       const isCompany = results[1];
-      console.log(results);
       Router.pushRoute(`/contractlist/${entity}/${isCompany}`);
     } catch (err) {
       this.setState({ errorMessage: err.message });
