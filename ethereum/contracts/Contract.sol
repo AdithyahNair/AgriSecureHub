@@ -27,7 +27,6 @@ contract ContractFactory {
         bool isCompany = (entity == EntityType(1));
         return (manager, isCompany);
     }
-
     function getDeployedContracts() public view returns (address []) {
         return deployedContracts;
     }
@@ -62,6 +61,15 @@ contract Contract {
             distributor,
             retailer,
             consumer
+        );
+    }
+
+    function getContractDetails() public view returns(address, string, string, uint) {
+        return (
+            manager, 
+            productName, 
+            productQuantity,
+            entityList.length
         );
     }
 }
