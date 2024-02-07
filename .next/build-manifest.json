@@ -25,15 +25,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/contractlist": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/contractlist.js"
-    ],
     "/contractlist/show": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/contractlist/show.js"
+    ],
+    "/contractlist/transactions": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/contractlist/transactions.js"
+    ],
+    "/contractlist/transfer": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/contractlist/transfer.js"
     ]
   },
   "ampFirstPages": []
