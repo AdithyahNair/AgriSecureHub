@@ -3,7 +3,7 @@ pragma solidity ^0.4.17;
 contract ContractFactory {
     enum EntityType { NOSTATUS, COMPANY, FARMER, PROCESSER, DISTRIBUTOR, RETAILER, CONSUMER }
     mapping(address => EntityType) public allEntities;
-    address[] public deployedContracts;
+    mapping(address => address[]) public userContracts;
     
     function enterEntityStatus(address manager, EntityType entity) public  {
         require(manager==msg.sender);
@@ -20,15 +20,17 @@ contract ContractFactory {
     function createContract(address farmerAddress, string name, string quantity) public  {
         require(allEntities[farmerAddress] == EntityType(2) && allEntities[msg.sender] == EntityType(1));
         address newContract = new Contract(farmerAddress, msg.sender, name, quantity);
-        deployedContracts.push(newContract);
+        userContracts[msg.sender].push(newContract);
+        userContracts[farmerAddress].push(newContract);
     }
 
     function getManagerAndEntityType(address manager, EntityType entity) public pure returns (address, bool) {
         bool isCompany = (entity == EntityType(1));
         return (manager, isCompany);
     }
-    function getDeployedContracts() public view returns (address []) {
-        return deployedContracts;
+
+     function getUserContracts(address user) public view returns (address[]) {
+        return userContracts[user];
     }
 }
 
