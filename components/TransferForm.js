@@ -2,18 +2,17 @@ import React, { Component } from "react";
 import { Form, Button, Input, Message, FormField } from "semantic-ui-react";
 import Contract from "../ethereum/contract";
 import web3 from "../ethereum/web3";
-import Router from "../routes";
+import { Router } from "../routes";
 
 class TransferForm extends Component {
   state = {
     payer: "",
     amount: 0,
     errorMessage: "",
-    loading: "",
+    loading: false,
   };
 
   onTransfer = async (event) => {
-    //
     event.preventDefault();
     const contract = Contract(this.props.address);
     this.setState({ loading: true, errorMessage: "" });
@@ -26,7 +25,7 @@ class TransferForm extends Component {
           value: web3.utils.toWei(this.state.amount, "ether"),
         });
       Router.pushRoute(
-        `/contractlist/${this.props.entity}/${this.props.isCompany}/${address}`
+        `/contractlist/${this.props.entity}/${this.props.isCompany}/${this.props.address}`
       );
     } catch (err) {
       this.setState({ errorMessage: err.message });

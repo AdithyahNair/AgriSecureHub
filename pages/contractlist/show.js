@@ -22,6 +22,20 @@ class ShowContract extends Component {
 
   renderContractData() {
     const { name, quantity, length, managerAddress, count } = this.props;
+    var phaseHeader = "";
+    if (length == 1) {
+      phaseHeader = "Seed Company";
+    } else if (length == 2) {
+      phaseHeader = "Farmer";
+    } else if (length == 3) {
+      phaseHeader = "Processor";
+    } else if (length == 4) {
+      phaseHeader = "Distributor";
+    } else if (length == 5) {
+      phaseHeader = "Retailer";
+    } else {
+      phaseHeader = "Consumer";
+    }
     const items = [
       {
         header: managerAddress,
@@ -53,7 +67,7 @@ class ShowContract extends Component {
           "The number of transactions that have taken place amongst the entities",
       },
       {
-        header: "Seed Company",
+        header: phaseHeader,
         meta: "Supply chain phase",
         description: "The current location of the product in the supply chain",
       },

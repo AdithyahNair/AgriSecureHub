@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Layout from "../../components/Layout";
-import contract from "../../ethereum/contract";
+import Contract from "../../ethereum/contract";
 import TransactionRow from "../../components/TransactionRow";
 import {
   Button,
@@ -18,18 +18,19 @@ class Transactions extends Component {
     const entity = props.query.entity;
     const isCompany = props.query.isCompany;
     const address = props.query.address;
-    const existingContract = contract(address);
-    const transactionCount = await existingContract.methods
-      .transactionCount()
+    const existingContract = Contract(address);
+    const transactionsLength = await existingContract.methods
+      .getCountOfTransactions()
       .call();
+    console.log(transactionsLength);
     const transactions = await Promise.all(
-      Array(BigInt(parseInt(transactionCount)))
+      Array(parseInt(BigInt(transactionsLength)))
         .fill()
         .map((element, index) => {
           return existingContract.methods.transactions(index).call();
         })
     );
-    return { entity, isCompany, address, transactions, transactionCount };
+    return { entity, isCompany, address, transactions };
   }
 
   renderRows() {

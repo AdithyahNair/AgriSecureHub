@@ -28,7 +28,6 @@ contract ContractFactory {
         bool isCompany = (entity == EntityType(1));
         return (manager, isCompany);
     }
-
     function getUserContracts(address user) public view returns (address[]) {
         return userContracts[user];
     }
@@ -52,7 +51,7 @@ contract Contract {
     string public productName;
     string public productQuantity;
     uint public phase = 1;
-    uint public transactionCount = 0;
+    uint public completedTransactionsCount = 0;
     address[] public entityList;
     
     function Contract(address agriculturist, address creator, string name, string quantity) public  {
@@ -87,25 +86,29 @@ contract Contract {
         require(!transaction.complete);
         require(msg.sender == transaction.payer);
         transaction.recipient.transfer(address(this).balance);         
-        transactionCount++;
+        completedTransactionsCount++;
         transaction.complete = true;
         entityList.push(transaction.payer);
-        if(transactionCount == 1) {
+        if(completedTransactionsCount == 1) {
             farmer = transaction.payer;
             phase = 2;
-        } else if(transactionCount == 2) {
+        } else if(completedTransactionsCount == 2) {
             processor = transaction.payer;
             phase = 3;
-        } else if(transactionCount == 3) {
+        } else if(completedTransactionsCount == 3) {
             distributor = transaction.payer;
             phase = 4;
-        } else if(transactionCount == 4) {
+        } else if(completedTransactionsCount == 4) {
             retailer = transaction.payer;
             phase = 5;
         } else  {
             consumer = transaction.payer;
             phase = 6;
         } 
+    }
+
+    function getCountOfTransactions() public view returns (uint) {
+        return transactions.length;
     }
 
 
@@ -126,7 +129,7 @@ contract Contract {
             productName, 
             productQuantity, 
             phase, 
-            transactionCount
+            completedTransactionsCount
         );
     }
 }
