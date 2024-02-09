@@ -3,6 +3,6 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/contractlist/show": "pages/contractlist/show.js",
-  "/contractlist/transfer": "pages/contractlist/transfer.js",
-  "/contractlist/transactions": "pages/contractlist/transactions.js"
+  "/contractlist": "pages/contractlist.js",
+  "/": "pages/index.js"
 }

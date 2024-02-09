@@ -1,13 +1,6 @@
 import React, { Component } from "react";
 import Layout from "../../components/Layout";
-import {
-  CardGroup,
-  Button,
-  Icon,
-  Grid,
-  GridRow,
-  GridColumn,
-} from "semantic-ui-react";
+import { CardGroup, Button, Icon } from "semantic-ui-react";
 import { Link } from "../../routes";
 import Contract from "../../ethereum/contract";
 
@@ -20,6 +13,7 @@ class ShowContract extends Component {
       name: details[1],
       quantity: details[2],
       length: details[3],
+      count: details[4],
       entity: props.query.entity,
       isCompany: props.query.isCompany,
       address: props.query.address,
@@ -27,7 +21,7 @@ class ShowContract extends Component {
   }
 
   renderContractData() {
-    const { name, quantity, length, managerAddress } = this.props;
+    const { name, quantity, length, managerAddress, count } = this.props;
     const items = [
       {
         header: managerAddress,
@@ -53,7 +47,7 @@ class ShowContract extends Component {
         description: "The number of entities involved in the supply chain",
       },
       {
-        header: "0",
+        header: parseInt(count),
         meta: "No. of transactions",
         description:
           "The number of transactions that have taken place amongst the entities",

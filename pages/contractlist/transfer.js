@@ -25,6 +25,7 @@ class Transfer extends Component {
         <TransferForm
           entity={this.props.entity}
           isCompany={this.props.isCompany}
+          address={this.props.address}
         />
       </Layout>
     );

@@ -29,17 +29,16 @@ contract ContractFactory {
         return (manager, isCompany);
     }
 
-     function getUserContracts(address user) public view returns (address[]) {
+    function getUserContracts(address user) public view returns (address[]) {
         return userContracts[user];
     }
 }
 
 contract Contract {
     struct Transaction {
-        address initiator;
+        address payer;
         address recipient;
-        string quantity; 
-        uint amount;
+        string amount;
         bool complete;
     }
 
@@ -54,53 +53,63 @@ contract Contract {
     string public productQuantity;
     uint public phase = 1;
     uint public transactionCount = 0;
+    address[] public entityList;
     
     function Contract(address agriculturist, address creator, string name, string quantity) public  {
         farmer = agriculturist;
         manager = creator;
         productName = name;
         productQuantity = quantity;
+        entityList.push(manager);
     }
 
-    function createTransfer(address initiator, address recipient, string quantity, uint amount) public payable {
-        require(msg.value == 0);
+    modifier allTransactionsComplete() {
+        for (uint i = 0; i < transactions.length; i++) {
+            require(transactions[i].complete);
+        }
+        _;
+    }
+
+    function createTransfer(address payer, address recipient, string amount) public allTransactionsComplete payable  {
+        require(msg.sender == recipient);
+        // require(validatePayer(entityType));  {This person has to be validated}. Do it in the react side. 
         Transaction memory newTransaction = Transaction({
-            initiator: initiator, 
-            recipient: recipient,
-            quantity: quantity, 
+            payer: payer, 
+            recipient: recipient, // recipient is you (who is creating this transaction)
             amount: amount,
             complete: false
         });
         transactions.push(newTransaction);
     }
 
-    function approveTransaction(uint index) public {
+    function approveTransaction(uint index) public  {
         Transaction storage transaction = transactions[index];
         require(!transaction.complete);
-        transaction.recipient.transfer(transaction.amount);
-        if(transactionCount == 2) {
-            processor = transaction.recipient;
+        require(msg.sender == transaction.payer);
+        transaction.recipient.transfer(address(this).balance);         
+        transactionCount++;
+        transaction.complete = true;
+        entityList.push(transaction.payer);
+        if(transactionCount == 1) {
+            farmer = transaction.payer;
+            phase = 2;
+        } else if(transactionCount == 2) {
+            processor = transaction.payer;
             phase = 3;
         } else if(transactionCount == 3) {
-            distributor = transaction.recipient;
+            distributor = transaction.payer;
             phase = 4;
         } else if(transactionCount == 4) {
-            retailer = transaction.recipient;
+            retailer = transaction.payer;
             phase = 5;
         } else  {
-            consumer = transaction.recipient;
+            consumer = transaction.payer;
             phase = 6;
         } 
-        transaction.complete = true;
-        if(transactionCount == 1) {
-            farmer = transaction.recipient;
-            phase = 2;
-        }
-        transactionCount++;
     }
 
 
-     function getSummary() public view returns(address, address, address, address, address, address) {
+    function getSummary() public view returns(address, address, address, address, address, address) {
         return (
             manager,
             farmer,
