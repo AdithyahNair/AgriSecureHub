@@ -2,7 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/contractlist/show": "pages/contractlist/show.js",
   "/contractlist": "pages/contractlist.js",
-  "/": "pages/index.js"
+  "/contractlist/show": "pages/contractlist/show.js",
+  "/contractlist/transactions": "pages/contractlist/transactions.js"
 }

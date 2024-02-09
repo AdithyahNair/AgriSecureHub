@@ -53,7 +53,7 @@ class ShowContract extends Component {
           "The number of transactions that have taken place amongst the entities",
       },
       {
-        header: "Farmer",
+        header: "Seed Company",
         meta: "Supply chain phase",
         description: "The current location of the product in the supply chain",
       },
