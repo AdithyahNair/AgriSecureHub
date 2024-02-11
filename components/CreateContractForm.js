@@ -13,6 +13,7 @@ class CreateContractForm extends Component {
     errorMessage: "",
     loading: false,
   };
+
   onCreate = async (event) => {
     event.preventDefault();
     const accounts = await web3.eth.getAccounts();

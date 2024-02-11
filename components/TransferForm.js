@@ -3,6 +3,7 @@ import { Form, Button, Input, Message, FormField } from "semantic-ui-react";
 import Contract from "../ethereum/contract";
 import web3 from "../ethereum/web3";
 import { Router } from "../routes";
+import factory from "../ethereum/factory";
 
 class TransferForm extends Component {
   state = {
@@ -10,6 +11,7 @@ class TransferForm extends Component {
     amount: 0,
     errorMessage: "",
     loading: false,
+    entityType: 0,
   };
 
   onTransfer = async (event) => {
@@ -17,16 +19,31 @@ class TransferForm extends Component {
     const contract = Contract(this.props.address);
     this.setState({ loading: true, errorMessage: "" });
     const accounts = await web3.eth.getAccounts();
+
     try {
-      await contract.methods
-        .createTransfer(this.state.payer, this.props.entity, this.state.amount)
-        .send({
-          from: accounts[0],
-          value: web3.utils.toWei(this.state.amount, "ether"),
-        });
-      Router.pushRoute(
-        `/contractlist/${this.props.entity}/${this.props.isCompany}/${this.props.address}`
-      );
+      this.setState({
+        entityType: parseInt(
+          await factory.methods.allEntities(this.state.payer).call()
+        ),
+      });
+
+      if (this.state.entityType) {
+        await contract.methods
+          .createTransfer(
+            this.state.payer,
+            this.props.entity,
+            this.state.amount
+          )
+          .send({
+            from: accounts[0],
+            value: web3.utils.toWei(this.state.amount, "ether"),
+          });
+        Router.pushRoute(
+          `/contractlist/${this.props.entity}/${this.props.isCompany}/${this.props.address}`
+        );
+      } else {
+        this.setState({ errorMessage: "Payer  is not an Entity." });
+      }
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }

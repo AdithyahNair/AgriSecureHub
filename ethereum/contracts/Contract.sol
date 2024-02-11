@@ -28,6 +28,7 @@ contract ContractFactory {
         bool isCompany = (entity == EntityType(1));
         return (manager, isCompany);
     }
+
     function getUserContracts(address user) public view returns (address[]) {
         return userContracts[user];
     }

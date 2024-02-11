@@ -22,7 +22,6 @@ class Transactions extends Component {
     const transactionsLength = await existingContract.methods
       .getCountOfTransactions()
       .call();
-    console.log(transactionsLength);
     const transactions = await Promise.all(
       Array(parseInt(BigInt(transactionsLength)))
         .fill()
