@@ -29,6 +29,12 @@ contract ContractFactory {
         return (manager, isCompany);
     }
 
+
+    function pushEntityIntoContract(address contractAddress, address entity) public {
+        address existingContract = Contract(contractAddress);
+        userContracts[entity].push(existingContract);
+    }
+
     function getUserContracts(address user) public view returns (address[]) {
         return userContracts[user];
     }

@@ -17,6 +17,9 @@ class TransferForm extends Component {
   onTransfer = async (event) => {
     event.preventDefault();
     const contract = Contract(this.props.address);
+    const details = await contract.methods.getContractDetails().call();
+    const phase = details[3];
+    const farmerAddress = await contract.methods.farmer().call();
     this.setState({ loading: true, errorMessage: "" });
     const accounts = await web3.eth.getAccounts();
 
@@ -27,7 +30,14 @@ class TransferForm extends Component {
         ),
       });
 
-      if (this.state.entityType) {
+      console.log(this.state.entityType, "+", parseInt(phase));
+
+      if (
+        parseInt(phase) == 1 &&
+        this.state.payer == farmerAddress &&
+        this.state.entityType &&
+        this.state.entityType == parseInt(phase) + 1
+      ) {
         await contract.methods
           .createTransfer(
             this.state.payer,
@@ -39,10 +49,34 @@ class TransferForm extends Component {
             value: web3.utils.toWei(this.state.amount, "ether"),
           });
         Router.pushRoute(
-          `/contractlist/${this.props.entity}/${this.props.isCompany}/${this.props.address}`
+          `/contractlist/${this.props.entity}/${this.props.isCompany}`
+        );
+      } else if (
+        parseInt(phase) != 1 &&
+        this.state.entityType &&
+        this.state.entityType == parseInt(phase) + 1
+      ) {
+        await contract.methods
+          .createTransfer(
+            this.state.payer,
+            this.props.entity,
+            this.state.amount
+          )
+          .send({
+            from: accounts[0],
+            value: web3.utils.toWei(this.state.amount, "ether"),
+          });
+        await factory.methods
+          .pushEntityIntoContract(this.props.address, this.state.payer)
+          .send({ from: accounts[0] });
+        Router.pushRoute(
+          `/contractlist/${this.props.entity}/${this.props.isCompany}`
         );
       } else {
-        this.setState({ errorMessage: "Payer  is not an Entity." });
+        this.setState({
+          errorMessage:
+            "Payer is not an entity or not present in the contract.",
+        });
       }
     } catch (err) {
       this.setState({ errorMessage: err.message });

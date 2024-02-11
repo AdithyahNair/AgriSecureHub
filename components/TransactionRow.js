@@ -15,12 +15,16 @@ class TransactionRow extends Component {
     const accounts = await web3.eth.getAccounts();
     this.setState({ loading: true });
     try {
-      await existingContract.methods.approveTransaction(this.props.id).send({
-        from: accounts[0],
-      });
-      Router.pushRoute(
-        `/contractlist/${this.props.entity}/${this.props.isCompany}/${this.props.address}`
-      );
+      if (this.props.entity == this.props.transaction.payer) {
+        await existingContract.methods.approveTransaction(this.props.id).send({
+          from: accounts[0],
+        });
+        Router.pushRoute(
+          `/contractlist/${this.props.entity}/${this.props.isCompany}`
+        );
+      } else {
+        this.setState({ errorMessage: "You are not the payer." });
+      }
     } catch (err) {
       console.log(err.message);
     }
