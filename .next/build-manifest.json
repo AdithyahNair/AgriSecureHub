@@ -39,6 +39,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/contractlist/show.js"
+    ],
+    "/contractlist/transactions": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/contractlist/transactions.js"
     ]
   },
   "ampFirstPages": []

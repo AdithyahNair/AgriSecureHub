@@ -11,32 +11,28 @@ class TransferForm extends Component {
     amount: 0,
     errorMessage: "",
     loading: false,
-    entityType: 0,
   };
 
   onTransfer = async (event) => {
     event.preventDefault();
     const contract = Contract(this.props.address);
     const details = await contract.methods.getContractDetails().call();
-    const phase = details[3];
+    const phase = parseInt(details[3]);
     const farmerAddress = await contract.methods.farmer().call();
     this.setState({ loading: true, errorMessage: "" });
     const accounts = await web3.eth.getAccounts();
+    const entityType = parseInt(
+      await factory.methods.allEntities(this.state.payer).call()
+    );
 
     try {
-      this.setState({
-        entityType: parseInt(
-          await factory.methods.allEntities(this.state.payer).call()
-        ),
-      });
-
-      console.log(this.state.entityType, "+", parseInt(phase));
+      console.log(entityType, "+", phase);
 
       if (
-        parseInt(phase) == 1 &&
+        phase == 1 &&
         this.state.payer == farmerAddress &&
-        this.state.entityType &&
-        this.state.entityType == parseInt(phase) + 1
+        entityType &&
+        entityType == phase + 1
       ) {
         await contract.methods
           .createTransfer(
@@ -51,11 +47,7 @@ class TransferForm extends Component {
         Router.pushRoute(
           `/contractlist/${this.props.entity}/${this.props.isCompany}`
         );
-      } else if (
-        parseInt(phase) != 1 &&
-        this.state.entityType &&
-        this.state.entityType == parseInt(phase) + 1
-      ) {
+      } else if (phase != 1 && entityType && entityType == phase + 1) {
         await contract.methods
           .createTransfer(
             this.state.payer,
@@ -75,7 +67,7 @@ class TransferForm extends Component {
       } else {
         this.setState({
           errorMessage:
-            "Payer is not an entity or not present in the contract.",
+            "The payer is either not specified in the contract or is not the correct entity.",
         });
       }
     } catch (err) {
