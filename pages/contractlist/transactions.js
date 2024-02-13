@@ -58,7 +58,7 @@ class Transactions extends Component {
           </Button>
         </Link>
         <h2>Transaction List</h2>
-        <Table celled textAlign="center">
+        <Table size="large" celled textAlign="center" color="green" padded>
           <TableHeader>
             <TableRow>
               <TableHeaderCell>ID</TableHeaderCell>
