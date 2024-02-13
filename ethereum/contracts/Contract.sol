@@ -17,9 +17,9 @@ contract ContractFactory {
         require(allEntities[manager] == entity);
     }
 
-    function createContract(address farmerAddress, string name, string quantity) public  {
+    function createContract(address farmerAddress, string name, string quantity) public {
         require(allEntities[farmerAddress] == EntityType(2) && allEntities[msg.sender] == EntityType(1));
-        address newContract = new Contract(farmerAddress, msg.sender, name, quantity);
+        address newContract = new Contract(farmerAddress, msg.sender, name, quantity, block.timestamp);
         userContracts[msg.sender].push(newContract);
         userContracts[farmerAddress].push(newContract);
     }
@@ -60,13 +60,15 @@ contract Contract {
     uint public phase = 1;
     uint public completedTransactionsCount = 0;
     address[] public entityList;
+    uint public timeStamp;
     
-    function Contract(address agriculturist, address creator, string name, string quantity) public  {
+    function Contract(address agriculturist, address creator, string name, string quantity, uint time) public  {
         farmer = agriculturist;
         manager = creator;
         productName = name;
         productQuantity = quantity;
         entityList.push(manager);
+        timeStamp = time;
     }
 
     modifier allTransactionsComplete() {
