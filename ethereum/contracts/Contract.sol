@@ -6,15 +6,12 @@ contract ContractFactory {
     mapping(address => address[]) public userContracts;
     
     function enterEntityStatus(address manager, EntityType entity) public  {
-        require(manager==msg.sender);
-        require(allEntities[manager] == EntityType(0));
+        require(manager==msg.sender && allEntities[manager] == EntityType(0));
         allEntities[manager] = entity;
     }
 
     function confirmStatus(address manager, EntityType entity) public view  {
-        require(manager == msg.sender);
-        require(allEntities[manager] != EntityType(0));
-        require(allEntities[manager] == entity);
+        require(manager == msg.sender && allEntities[manager] != EntityType(0) && allEntities[manager] == entity);
     }
 
     function createContract(address farmerAddress, string name, string quantity) public {
@@ -51,15 +48,11 @@ contract Contract {
     Transaction[] public transactions;
     address public manager;
     address public farmer;
-    address public processor;
-    address public distributor;
-    address public retailer;
-    address public consumer;
+    uint public consumerCount = 0;
     string public productName;
     string public productQuantity;
     uint public phase = 1;
     uint public completedTransactionsCount = 0;
-    address[] public entityList;
     uint public timeStamp;
     
     function Contract(address agriculturist, address creator, string name, string quantity, uint time) public  {
@@ -67,7 +60,6 @@ contract Contract {
         manager = creator;
         productName = name;
         productQuantity = quantity;
-        entityList.push(manager);
         timeStamp = time;
     }
 
@@ -80,10 +72,9 @@ contract Contract {
 
     function createTransfer(address payer, address recipient, string amount) public allTransactionsComplete payable  {
         require(msg.sender == recipient);
-        // require(validatePayer(entityType));  {This person has to be validated}. Do it in the react side. 
         Transaction memory newTransaction = Transaction({
             payer: payer, 
-            recipient: recipient, // recipient is you (who is creating this transaction)
+            recipient: recipient, 
             amount: amount,
             complete: false
         });
@@ -92,27 +83,17 @@ contract Contract {
 
     function approveTransaction(uint index) public  {
         Transaction storage transaction = transactions[index];
-        require(!transaction.complete);
-        require(msg.sender == transaction.payer);
+        require(!transaction.complete && msg.sender == transaction.payer);
         transaction.recipient.transfer(address(this).balance);         
         completedTransactionsCount++;
         transaction.complete = true;
-        entityList.push(transaction.payer);
         if(completedTransactionsCount == 1) {
             farmer = transaction.payer;
-            phase = 2;
-        } else if(completedTransactionsCount == 2) {
-            processor = transaction.payer;
-            phase = 3;
-        } else if(completedTransactionsCount == 3) {
-            distributor = transaction.payer;
-            phase = 4;
-        } else if(completedTransactionsCount == 4) {
-            retailer = transaction.payer;
-            phase = 5;
-        } else  {
-            consumer = transaction.payer;
-            phase = 6;
+            phase = completedTransactionsCount+1;
+        } else if(phase >=6) {
+            consumerCount++;
+        } else {
+            phase = completedTransactionsCount+1;
         } 
     }
 
@@ -120,25 +101,14 @@ contract Contract {
         return transactions.length;
     }
 
-
-    function getSummary() public view returns(address, address, address, address, address, address) {
-        return (
-            manager,
-            farmer,
-            processor,
-            distributor,
-            retailer,
-            consumer
-        );
-    }
-
-    function getContractDetails() public view returns(address, string, string, uint, uint) {
+    function getContractDetails() public view returns(address, string, string, uint, uint, uint) {
         return (
             manager, 
             productName, 
             productQuantity, 
             phase, 
-            completedTransactionsCount
+            completedTransactionsCount,
+            consumerCount
         );
     }
 }

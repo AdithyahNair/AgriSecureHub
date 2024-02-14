@@ -26,6 +26,7 @@ class ShowContract extends Component {
       quantity: details[2],
       phase: parseInt(details[3]),
       count: parseInt(details[4]),
+      consumerCount: parseInt(details[5]),
       entity: props.query.entity,
       isCompany: props.query.isCompany,
       address: props.query.address,
@@ -33,7 +34,8 @@ class ShowContract extends Component {
   }
 
   renderContractData() {
-    const { name, quantity, phase, managerAddress, count } = this.props;
+    const { name, quantity, phase, managerAddress, count, consumerCount } =
+      this.props;
     var phaseHeader = "";
     if (phase == 1) {
       phaseHeader = "Seed Company";
@@ -83,8 +85,13 @@ class ShowContract extends Component {
         meta: "Supply chain phase",
         description: "The current location of the product in the supply chain",
       },
+      {
+        header: consumerCount,
+        meta: "Consumer Count",
+        description: "The number of consumers who have bought the product",
+      },
     ];
-    return <CardGroup items={items} centered itemsPerRow={3} />;
+    return <CardGroup items={items} centered itemsPerRow={4} />;
   }
 
   renderSteps() {
@@ -125,7 +132,7 @@ class ShowContract extends Component {
           />
         </Step>
 
-        <Step active={this.props.phase == 6} completed={this.props.phase >= 6}>
+        <Step active={this.props.phase >= 6} completed={this.props.phase >= 6}>
           <StepContent
             title="Consumer"
             description="Utilizes the end product."
@@ -146,8 +153,13 @@ class ShowContract extends Component {
               <Icon name="angle left" />
             </Button>
           </Link>
-          {this.props.entityType == this.props.phase &&
-          this.props.phase != 6 ? (
+          {this.props.entityType == this.props.phase && this.props.phase < 6 ? (
+            <Link
+              route={`/contractlist/${this.props.entity}/${this.props.isCompany}/${this.props.address}/transfer`}
+            >
+              <Button floated="right" primary content="Transfer Product" />
+            </Link>
+          ) : this.props.entityType == 5 && this.props.phase >= 6 ? (
             <Link
               route={`/contractlist/${this.props.entity}/${this.props.isCompany}/${this.props.address}/transfer`}
             >
