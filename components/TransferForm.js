@@ -24,10 +24,11 @@ class TransferForm extends Component {
     const entityType = parseInt(
       await factory.methods.allEntities(this.state.payer).call()
     );
+    const isConsumer = await contract.methods
+      .isConsumers(this.state.payer)
+      .call();
 
     try {
-      console.log(entityType, "+", phase);
-
       if (
         phase == 1 &&
         this.state.payer == farmerAddress &&
@@ -47,7 +48,10 @@ class TransferForm extends Component {
         Router.pushRoute(
           `/contractlist/${this.props.entity}/${this.props.isCompany}`
         );
-      } else if (phase != 1 && entityType && entityType == phase + 1) {
+      } else if (
+        (phase >= 1 && phase < 6 && entityType && entityType == phase + 1) ||
+        (phase >= 6 && entityType == 6)
+      ) {
         await contract.methods
           .createTransfer(
             this.state.payer,
@@ -58,9 +62,12 @@ class TransferForm extends Component {
             from: accounts[0],
             value: web3.utils.toWei(this.state.amount, "ether"),
           });
-        await factory.methods
-          .pushEntityIntoContract(this.props.address, this.state.payer)
-          .send({ from: accounts[0] });
+        if (!isConsumer) {
+          await factory.methods
+            .pushEntityIntoContract(this.props.address, this.state.payer)
+            .send({ from: accounts[0] });
+        }
+
         Router.pushRoute(
           `/contractlist/${this.props.entity}/${this.props.isCompany}`
         );

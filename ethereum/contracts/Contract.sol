@@ -54,6 +54,7 @@ contract Contract {
     uint public phase = 1;
     uint public completedTransactionsCount = 0;
     uint public timeStamp;
+    mapping(address => bool) public consumers;
     
     function Contract(address agriculturist, address creator, string name, string quantity, uint time) public  {
         farmer = agriculturist;
@@ -86,19 +87,22 @@ contract Contract {
         require(!transaction.complete && msg.sender == transaction.payer);
         transaction.recipient.transfer(address(this).balance);         
         completedTransactionsCount++;
+        phase++;
         transaction.complete = true;
         if(completedTransactionsCount == 1) {
             farmer = transaction.payer;
-            phase = completedTransactionsCount+1;
-        } else if(phase >=6) {
+        } else if(phase >= 6) {
+            consumers[transaction.payer] = true;
             consumerCount++;
-        } else {
-            phase = completedTransactionsCount+1;
         } 
     }
 
     function getCountOfTransactions() public view returns (uint) {
         return transactions.length;
+    }
+
+    function isConsumers(address consumer) public view returns (bool) {
+        return consumers[consumer];
     }
 
     function getContractDetails() public view returns(address, string, string, uint, uint, uint) {

@@ -3,7 +3,7 @@ import ContractFactory from "./build/ContractFactory.json";
 
 const instance = new web3.eth.Contract(
   JSON.parse(ContractFactory.interface),
-  "0x44008dfb818b1286f8c6178c94e61864c5efc049"
+  "0xa8afd1b1c8b7a0442a288b525f2e907b6dd960b4"
 );
 
 export default instance;
