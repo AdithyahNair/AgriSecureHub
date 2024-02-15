@@ -12,6 +12,7 @@ import {
   TableBody,
 } from "semantic-ui-react";
 import { Link } from "../../routes";
+import DeleteTransaction from "../../components/DeleteTransaction";
 
 class Transactions extends Component {
   static async getInitialProps(props) {
@@ -19,6 +20,8 @@ class Transactions extends Component {
     const isCompany = props.query.isCompany;
     const address = props.query.address;
     const existingContract = Contract(address);
+    const details = await existingContract.methods.getContractDetails().call();
+    const phase = parseInt(details[3]);
     const transactionsLength = await existingContract.methods
       .getCountOfTransactions()
       .call();
@@ -29,7 +32,14 @@ class Transactions extends Component {
           return existingContract.methods.transactions(index).call();
         })
     );
-    return { entity, isCompany, address, transactions };
+    return {
+      entity,
+      isCompany,
+      address,
+      transactions,
+      existingContract,
+      phase,
+    };
   }
 
   renderRows() {
@@ -57,6 +67,13 @@ class Transactions extends Component {
             <Icon name="angle left" />
           </Button>
         </Link>
+        <DeleteTransaction
+          phase={this.props.phase}
+          address={this.props.address}
+          isCompany={this.props.isCompany}
+          entity={this.props.entity}
+          transactions={this.props.transactions}
+        />
         <h2>Transaction List</h2>
         <Table size="large" celled textAlign="center" color="green" padded>
           <TableHeader>

@@ -32,6 +32,11 @@ contract ContractFactory {
         userContracts[entity].push(existingContract);
     }
 
+    function popEntityFromContract(address entity) public {
+        delete userContracts[entity][userContracts[entity].length -1];
+        userContracts[entity].length--;
+    }
+
     function getUserContracts(address user) public view returns (address[]) {
         return userContracts[user];
     }
@@ -95,6 +100,12 @@ contract Contract {
             consumers[transaction.payer] = true;
             consumerCount++;
         } 
+    }
+
+    function deleteTransaction() public  {
+        require(!transactions[transactions.length - 1].complete && (msg.sender == transactions[transactions.length - 1].payer || msg.sender == transactions[transactions.length - 1].recipient));
+        delete transactions[transactions.length - 1];
+        transactions.length--;
     }
 
     function getCountOfTransactions() public view returns (uint) {
