@@ -91,7 +91,7 @@ contract Contract {
         transaction.complete = true;
         if(completedTransactionsCount == 1) {
             farmer = transaction.payer;
-        } else if(phase >= 6) {
+        } else if(phase >= 6 && !consumers[transaction.payer]) {
             consumers[transaction.payer] = true;
             consumerCount++;
         } 
