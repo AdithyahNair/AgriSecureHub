@@ -43,7 +43,6 @@ class TransferForm extends Component {
           )
           .send({
             from: accounts[0],
-            value: web3.utils.toWei(this.state.amount, "ether"),
           });
         Router.pushRoute(
           `/contractlist/${this.props.entity}/${this.props.isCompany}`
@@ -60,7 +59,6 @@ class TransferForm extends Component {
           )
           .send({
             from: accounts[0],
-            value: web3.utils.toWei(this.state.amount, "ether"),
           });
         if (!isConsumer) {
           await factory.methods

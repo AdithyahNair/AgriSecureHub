@@ -18,6 +18,10 @@ class TransactionRow extends Component {
       if (this.props.entity == this.props.transaction.payer) {
         await existingContract.methods.approveTransaction(this.props.id).send({
           from: accounts[0],
+          value: web3.utils.toWei(
+            parseFloat(this.props.transaction.amount),
+            "ether"
+          ),
         });
         Router.pushRoute(
           `/contractlist/${this.props.entity}/${this.props.isCompany}`

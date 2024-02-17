@@ -76,7 +76,7 @@ contract Contract {
         _;
     }
 
-    function createTransfer(address payer, address recipient, string amount) public allTransactionsComplete payable  {
+    function createTransfer(address payer, address recipient, string amount) public allTransactionsComplete  {
         require(msg.sender == recipient);
         Transaction memory newTransaction = Transaction({
             payer: payer, 
@@ -87,7 +87,7 @@ contract Contract {
         transactions.push(newTransaction);
     }
 
-    function approveTransaction(uint index) public  {
+    function approveTransaction(uint index) public payable  {
         Transaction storage transaction = transactions[index];
         require(!transaction.complete && msg.sender == transaction.payer);
         transaction.recipient.transfer(address(this).balance);         
