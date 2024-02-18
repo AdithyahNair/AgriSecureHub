@@ -74,7 +74,7 @@ jobs:
       - name: Install dependencies
         run: |
           if [ -f "package.json" ]; then
-            npm ci
+            npm install --legacy-peer-deps
           else
             echo "Unable to determine package manager"
             exit 1
