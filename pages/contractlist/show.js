@@ -91,6 +91,11 @@ class ShowContract extends Component {
         meta: "Consumer Count",
         description: "The number of consumers who have bought the product",
       },
+      {
+        header: <SensorData />,
+        meta: "Quality Control",
+        description: "Temperature and Humidity conditions of the product",
+      },
     ];
     return <CardGroup items={items} centered itemsPerRow={4} />;
   }
@@ -181,7 +186,6 @@ class ShowContract extends Component {
               content="View Transactions"
             />
           </Link>
-          <SensorData />
         </Layout>
       </div>
     );

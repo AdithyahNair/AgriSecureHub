@@ -14,9 +14,9 @@ const SensorData = () => {
   }, [db]);
 
   return (
-    <div>
-      Temperature: {temp} Humidity: {humid}
-    </div>
+    <b style={{ fontSize: 16, color: "green", wordSpacing: "15px" }}>
+      {temp + "°C " + humid + "%"}
+    </b>
   );
 };
 
