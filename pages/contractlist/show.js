@@ -11,6 +11,8 @@ import {
 import { Link } from "../../routes";
 import Contract from "../../ethereum/contract";
 import factory from "../../ethereum/factory";
+import DisplaySensorData from "../../components/DisplaySensorData";
+import SensorData from "../../components/SensorData";
 
 class ShowContract extends Component {
   static async getInitialProps(props) {
@@ -180,6 +182,7 @@ class ShowContract extends Component {
               content="View Transactions"
             />
           </Link>
+          <SensorData />
         </Layout>
       </div>
     );
