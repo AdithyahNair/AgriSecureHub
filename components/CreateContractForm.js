@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { FormField, Form, Button, Input, Message } from "semantic-ui-react";
+import {
+  FormField,
+  Form,
+  Button,
+  Input,
+  Message,
+  FormGroup,
+} from "semantic-ui-react";
 import web3 from "../ethereum/web3";
 import factory from "../ethereum/factory";
 import { Router } from "../routes";
@@ -12,6 +19,10 @@ class CreateContractForm extends Component {
     quantity: "",
     errorMessage: "",
     loading: false,
+    tLower: 0,
+    tHigher: 0,
+    hLower: 0,
+    hHigher: 0,
   };
 
   onCreate = async (event) => {
@@ -23,7 +34,11 @@ class CreateContractForm extends Component {
         .createContract(
           this.state.farmerAddress,
           this.state.name,
-          this.state.quantity
+          this.state.quantity,
+          this.state.tLower,
+          this.state.tHigher,
+          this.state.hLower,
+          this.state.hHigher
         )
         .send({
           from: accounts[0],
@@ -76,6 +91,46 @@ class CreateContractForm extends Component {
               labelPosition="right"
             />
           </FormField>
+          <FormGroup widths={"equal"}>
+            <FormField>
+              <label>Temperature Lower Limit</label>
+              <Input
+                onChange={(event) =>
+                  this.setState({ tLower: event.target.value })
+                }
+                value={this.state.tLower}
+              />
+            </FormField>
+            <FormField>
+              <label>Temperature Higher Limit</label>
+              <Input
+                onChange={(event) =>
+                  this.setState({ tHigher: event.target.value })
+                }
+                value={this.state.tHigher}
+              />
+            </FormField>
+          </FormGroup>
+          <FormGroup widths={"equal"}>
+            <FormField>
+              <label>Humidity Lower Limit</label>
+              <Input
+                onChange={(event) =>
+                  this.setState({ hLower: event.target.value })
+                }
+                value={this.state.hLower}
+              />
+            </FormField>
+            <FormField>
+              <label>Humidity Higher Limit</label>
+              <Input
+                onChange={(event) =>
+                  this.setState({ hHigher: event.target.value })
+                }
+                value={this.state.hHigher}
+              />
+            </FormField>
+          </FormGroup>
           <Button loading={this.state.loading} content="Create" primary />
           <Message
             header="Oops!"

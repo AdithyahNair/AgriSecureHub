@@ -14,7 +14,7 @@ DHT dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
 #define WIFI_SSID "Adistein14pro"
 #define WIFI_PASSWORD "00000000"
 
-#define ADDRESS "0x5B93ba34D9A830sD976C6Cb5fe3e62a6c5601E13Aa" // contractAddress (change as per sensor usage)
+#define ADDRESS "0xD002c7a79F88332150BA003045Ef3C334ad6Cb7F" // contractAddress (change as per sensor usage)
 
 #define API_KEY "AIzaSyBeT2sbKUepAzBVrmakBgl9qBO36b1xfQk"  
 #define DATABASE_URL "https://agrihub-dafcf-default-rtdb.asia-southeast1.firebasedatabase.app/" 
@@ -60,6 +60,8 @@ void setup(){
   
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
+
+  delay(2000);
 }
 
 void checkValueExists(float temperature, float humidity, String tPath, String hPath) {

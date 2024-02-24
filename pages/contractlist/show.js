@@ -28,6 +28,10 @@ class ShowContract extends Component {
       phase: parseInt(details[3]),
       count: parseInt(details[4]),
       consumerCount: parseInt(details[5]),
+      tLower: parseInt(details[6]),
+      tHigher: parseInt(details[7]),
+      hLower: parseInt(details[8]),
+      hHigher: parseInt(details[9]),
       entity: props.query.entity,
       isCompany: props.query.isCompany,
       address: props.query.address,
@@ -35,8 +39,18 @@ class ShowContract extends Component {
   }
 
   renderContractData() {
-    const { name, quantity, phase, managerAddress, count, consumerCount } =
-      this.props;
+    const {
+      name,
+      quantity,
+      phase,
+      managerAddress,
+      count,
+      consumerCount,
+      tLower,
+      tHigher,
+      hLower,
+      hHigher,
+    } = this.props;
     var phaseHeader = "";
     if (phase == 1) {
       phaseHeader = "Seed Company";
@@ -92,7 +106,15 @@ class ShowContract extends Component {
         description: "The number of consumers who have bought the product",
       },
       {
-        header: <SensorData address={this.props.address} />,
+        header: (
+          <SensorData
+            address={this.props.address}
+            tLower={tLower}
+            tHigher={tHigher}
+            hLower={hLower}
+            hHigher={hHigher}
+          />
+        ),
         meta: "Quality Control",
         description: "Temperature and Humidity conditions of the product",
       },

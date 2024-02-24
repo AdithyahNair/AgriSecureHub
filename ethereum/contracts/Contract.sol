@@ -14,9 +14,9 @@ contract ContractFactory {
         require(manager == msg.sender && allEntities[manager] != EntityType(0) && allEntities[manager] == entity);
     }
 
-    function createContract(address farmerAddress, string name, string quantity) public {
+    function createContract(address farmerAddress, string name, string quantity, uint tLower, uint tHigher, uint hLower, uint hHigher) public {
         require(allEntities[farmerAddress] == EntityType(2) && allEntities[msg.sender] == EntityType(1));
-        address newContract = new Contract(farmerAddress, msg.sender, name, quantity, block.timestamp);
+        address newContract = new Contract(farmerAddress, msg.sender, name, quantity, block.timestamp, tLower, tHigher, hLower, hHigher);
         userContracts[msg.sender].push(newContract);
         userContracts[farmerAddress].push(newContract);
     }
@@ -54,6 +54,10 @@ contract Contract {
     address public manager;
     address public farmer;
     uint public consumerCount = 0;
+    uint public tempLower; 
+    uint public tempHigher; 
+    uint public humidLower;
+    uint public humidHigher;
     string public productName;
     string public productQuantity;
     uint public phase = 1;
@@ -61,14 +65,18 @@ contract Contract {
     uint public timeStamp;
     mapping(address => bool) public consumers;
     
-    function Contract(address agriculturist, address creator, string name, string quantity, uint time) public  {
+    function Contract(address agriculturist, address creator, string name, string quantity, uint time, uint tLower, uint tHigher, uint hLower, uint hHigher) public  {
         farmer = agriculturist;
         manager = creator;
         productName = name;
         productQuantity = quantity;
         timeStamp = time;
+        tempLower = tLower;
+        tempHigher = tHigher;
+        humidLower = hLower;
+        humidHigher = hHigher;
     }
-
+    
     modifier allTransactionsComplete() {
         for (uint i = 0; i < transactions.length; i++) {
             require(transactions[i].complete);
@@ -116,14 +124,18 @@ contract Contract {
         return consumers[consumer];
     }
 
-    function getContractDetails() public view returns(address, string, string, uint, uint, uint) {
+    function getContractDetails() public view returns(address, string, string, uint, uint, uint, uint, uint, uint, uint) {
         return (
             manager, 
             productName, 
             productQuantity, 
             phase, 
             completedTransactionsCount,
-            consumerCount
+            consumerCount, 
+            tempLower, 
+            tempHigher, 
+            humidLower, 
+            humidHigher
         );
     }
 }
