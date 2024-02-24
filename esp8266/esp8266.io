@@ -14,6 +14,8 @@ DHT dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
 #define WIFI_SSID "Adistein14pro"
 #define WIFI_PASSWORD "00000000"
 
+#define ADDRESS "0x5B93ba34D9A830sD976C6Cb5fe3e62a6c5601E13Aa" // contractAddress (change as per sensor usage)
+
 #define API_KEY "AIzaSyBeT2sbKUepAzBVrmakBgl9qBO36b1xfQk"  
 #define DATABASE_URL "https://agrihub-dafcf-default-rtdb.asia-southeast1.firebasedatabase.app/" 
 
@@ -24,7 +26,7 @@ FirebaseConfig config;
 
 unsigned long sendDataPrevMillis = 0;
 int count = 0;
-bool signupOK = false;               
+bool signupOK = false; 
 
 void setup(){
   dht_sensor.begin();
@@ -60,31 +62,33 @@ void setup(){
   Firebase.reconnectWiFi(true);
 }
 
+void checkValueExists(float temperature, float humidity, String tPath, String hPath) {
+  if(Firebase.RTDB.getInt(&fbdo,hPath.c_str())) {
+    Firebase.RTDB.setFloat(&fbdo, hPath.c_str(), humidity);
+    Firebase.RTDB.setFloat(&fbdo, tPath.c_str(), temperature);
+  } else {
+    Firebase.RTDB.pushFloat(&fbdo, hPath.c_str(), humidity);
+    Firebase.RTDB.pushFloat(&fbdo, tPath.c_str(), temperature);
+  }
+
+  Serial.print("Temperature : ");
+  Serial.println(temperature);
+
+  Serial.print("Humidity : ");
+  Serial.println(humidity);
+}
+
 void loop(){
 
   float temperature = dht_sensor.readTemperature();
   float humidity = dht_sensor.readHumidity();
-  
-  if (Firebase.ready() && signupOK && (millis() - sendDataPrevMillis > 1000 || sendDataPrevMillis == 0)){
+
+  String hPath = "SensorData/" + String(ADDRESS) + "/humidity";
+  String tPath = "SensorData/" + String(ADDRESS) + "/temperature";
+
+  if (Firebase.ready() && signupOK && (millis() - sendDataPrevMillis > 1000 || sendDataPrevMillis == 0)) {
     sendDataPrevMillis = millis();
-    if (Firebase.RTDB.setInt(&fbdo, "/temperature", temperature)){
-      Serial.print("Temperature : ");
-      Serial.println(temperature);
-    }
-    else {
-      Serial.println("Failed to Read from the Sensor");
-      Serial.println("REASON: " + fbdo.errorReason());
-    }
-
-    if (Firebase.RTDB.setFloat(&fbdo, "humidity", humidity)){
-      Serial.print("Humidity : ");
-      Serial.print(humidity);
-    }
-    else {
-      Serial.println("Failed to Read from the Sensor");
-      Serial.println("REASON: " + fbdo.errorReason());
-    }
-
+    checkValueExists(temperature, humidity, tPath, hPath);
     delay(2000);
   }
 }

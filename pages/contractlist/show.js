@@ -92,7 +92,7 @@ class ShowContract extends Component {
         description: "The number of consumers who have bought the product",
       },
       {
-        header: <SensorData />,
+        header: <SensorData address={this.props.address} />,
         meta: "Quality Control",
         description: "Temperature and Humidity conditions of the product",
       },
