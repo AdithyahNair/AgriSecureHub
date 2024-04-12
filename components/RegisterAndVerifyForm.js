@@ -31,7 +31,11 @@ class RegisterAndVerifyForm extends Component {
       });
       const receipt = await transactionPromise;
       const afterExecution = new Date().getTime();
-      console.log("Time: ", afterExecution - beforeExecution);
+      console.log(
+        "Time: ",
+        (afterExecution - beforeExecution) / 1000,
+        +" seconds"
+      );
       const results = await factory.methods
         .getManagerAndEntityType(this.state.address, this.state.type)
         .call();
@@ -58,7 +62,11 @@ class RegisterAndVerifyForm extends Component {
       });
       const receipt = await transactionPromise;
       const afterExecution = new Date().getTime();
-      console.log("Time: ", afterExecution - beforeExecution);
+      console.log(
+        "Time: ",
+        (afterExecution - beforeExecution) / 1000,
+        +" seconds"
+      );
       const results = await factory.methods
         .getManagerAndEntityType(this.state.address, this.state.type)
         .call();

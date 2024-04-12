@@ -31,7 +31,11 @@ class TransactionRow extends Component {
         });
         const receipt = await transactionPromise;
         const afterExecution = new Date().getTime();
-        console.log("Time: ", afterExecution - beforeExecution);
+        console.log(
+          "Time: ",
+          (afterExecution - beforeExecution) / 1000,
+          +" seconds"
+        );
         Router.pushRoute(
           `/contractlist/${this.props.entity}/${this.props.isCompany}`
         );
