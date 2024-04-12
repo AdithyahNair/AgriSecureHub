@@ -30,7 +30,8 @@ class CreateContractForm extends Component {
     const accounts = await web3.eth.getAccounts();
     this.setState({ loading: true, errorMessage: "" });
     try {
-      await factory.methods
+      var beforeExecution = 0;
+      const transactionPromise = factory.methods
         .createContract(
           this.state.farmerAddress,
           this.state.name,
@@ -43,6 +44,13 @@ class CreateContractForm extends Component {
         .send({
           from: accounts[0],
         });
+      transactionPromise.on("transactionHash", (hash) => {
+        beforeExecution = new Date().getTime();
+      });
+      const receipt = await transactionPromise;
+      const afterExecution = new Date().getTime();
+      console.log("Time: ", afterExecution - beforeExecution);
+      console.log("After execution: ", new Date().getTime());
       Router.pushRoute(
         `/contractlist/${this.props.entity}/${this.props.isCompany}`
       );

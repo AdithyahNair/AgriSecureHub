@@ -22,9 +22,16 @@ class RegisterAndVerifyForm extends Component {
     this.setState({ create: true, errorMessage: "" });
     const accounts = await web3.eth.getAccounts();
     try {
-      await factory.methods
+      var beforeExecution = 0;
+      const transactionPromise = factory.methods
         .enterEntityStatus(this.state.address, this.state.type)
         .send({ from: accounts[0] });
+      transactionPromise.on("transactionHash", (hash) => {
+        beforeExecution = new Date().getTime();
+      });
+      const receipt = await transactionPromise;
+      const afterExecution = new Date().getTime();
+      console.log("Time: ", afterExecution - beforeExecution);
       const results = await factory.methods
         .getManagerAndEntityType(this.state.address, this.state.type)
         .call();
@@ -42,9 +49,16 @@ class RegisterAndVerifyForm extends Component {
     const accounts = await web3.eth.getAccounts();
     this.setState({ verify: true, errorMessage: "" });
     try {
-      await factory.methods
+      var beforeExecution = 0;
+      const transactionPromise = factory.methods
         .confirmStatus(this.state.address, this.state.type)
         .send({ from: accounts[0] });
+      transactionPromise.on("transactionHash", (hash) => {
+        beforeExecution = new Date().getTime();
+      });
+      const receipt = await transactionPromise;
+      const afterExecution = new Date().getTime();
+      console.log("Time: ", afterExecution - beforeExecution);
       const results = await factory.methods
         .getManagerAndEntityType(this.state.address, this.state.type)
         .call();

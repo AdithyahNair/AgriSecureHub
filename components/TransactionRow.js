@@ -16,13 +16,22 @@ class TransactionRow extends Component {
     this.setState({ loading: true });
     try {
       if (this.props.entity == this.props.transaction.payer) {
-        await existingContract.methods.approveTransaction(this.props.id).send({
-          from: accounts[0],
-          value: web3.utils.toWei(
-            parseFloat(this.props.transaction.amount),
-            "ether"
-          ),
+        var beforeExecution = 0;
+        const transactionPromise = existingContract.methods
+          .approveTransaction(this.props.id)
+          .send({
+            from: accounts[0],
+            value: web3.utils.toWei(
+              parseFloat(this.props.transaction.amount),
+              "ether"
+            ),
+          });
+        transactionPromise.on("transactionHash", (hash) => {
+          beforeExecution = new Date().getTime();
         });
+        const receipt = await transactionPromise;
+        const afterExecution = new Date().getTime();
+        console.log("Time: ", afterExecution - beforeExecution);
         Router.pushRoute(
           `/contractlist/${this.props.entity}/${this.props.isCompany}`
         );
